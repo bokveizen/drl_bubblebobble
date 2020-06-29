@@ -41,40 +41,43 @@ def action(n):
     return ([action_one_step(-1)] + [action_one_step(n)]) * 5
 
 
-def find_best_acts(path, level):
+def find_best_acts(path, level, aux):
     level_acts_files = [f for f in os.listdir(path) if 'lvl{}to{}_'.format(level, level + 1) in f]
     if level_acts_files:
         return os.path.join(path, max(level_acts_files, key=lambda f: int(f[f.find('score') + 5:f.find('acts') - 1])))
-    return 'saved_acts_one_level_only/lvl{}_acts.pickle'.format(level)
+    return '{}/lvl{}_acts.pickle'.format(aux, level)
 
 
-def test(level, display=400):
+def test(level, display=0):
     env = retro.make(game='BubbleBobble-Nes', state='Level{:02d}'.format(level))
     obs = env.reset()
     env.render()
     action_buffer = []
-    acts_dir = 'saved_acts_MCTS'
-    saved_acts_path = find_best_acts(acts_dir, level)
-    with open('saved_acts_one_level_only/lvl{}_acts.pickle'.format(level), 'rb') as handle:
+    acts_dir = 'saved_acts_MCTS_0629'
+    aux_dir = 'saved_acts_one_level_only'
+    saved_acts_path = find_best_acts(acts_dir, level, aux_dir)
+    print('Loading', saved_acts_path)
+    with open(saved_acts_path.format(level), 'rb') as handle:
         action_array = pickle.load(handle)
-    display = display
+    # action_array += [0] * 10
     info = None
     while action_array:
         if not action_buffer:
             action_buffer += action(action_array.pop(0))
         obs, rew, done, info = env.step(action_buffer.pop())
-        if display > 0:
-            time.sleep(1 / display)
+        if display >= 0:
+            if display > 0:
+                time.sleep(1 / display)
             env.render()
     print(info)
-    input()
+    # input()
     time.sleep(1)
     env.close()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-l', '--level', nargs='+', type=int, default=list(range(1, 11)), help="the starting level")
+    parser.add_argument('-l', '--level', nargs='+', type=int, default=list(range(1, 100)), help="the starting level")
     args = parser.parse_args()
 
     test_level_list = args.level

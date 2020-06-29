@@ -216,7 +216,7 @@ def retro_search(process_id, game_name='BubbleBobble-Nes', level=1):
                 best_score = cur_best_score
                 cur_acts = level_up_infos[best_index][0]
                 cur_level = level_up_infos[best_index][2]
-                file_name = 'saved_acts_MCTS/lvl{}to{}_score{}_acts.pickle'.format(level, cur_level, best_score)
+                file_name = 'saved_acts_MCTS_max/lvl{}to{}_score{}_acts.pickle'.format(level, cur_level, best_score)
                 with open(file_name, 'wb') as handle:
                     pickle.dump(cur_acts, handle)
     print(process_id, 'exited.')
