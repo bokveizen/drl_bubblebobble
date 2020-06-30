@@ -81,7 +81,6 @@ def test(level, display=0):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-l', '--level', nargs='+', type=int, default=list(range(1, 100)), help="the starting level")
-    parser.add_argument('-l', '--level', nargs='+', type=int, default=list(range(1, 100)), help="the starting level")
     args = parser.parse_args()
 
     test_level_list = args.level
