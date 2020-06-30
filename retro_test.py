@@ -48,15 +48,16 @@ def test(level, display=400):
         action_array = pickle.load(handle)
     display = display
     info = None
-    while action_array:
+    while action_array or action_buffer:
         if not action_buffer:
             action_buffer += action(action_array.pop(0))
         obs, rew, done, info = env.step(action_buffer.pop())
-        if display > 0:
-            time.sleep(1 / display)
+        if display >= 0:
+            if display > 0:
+                time.sleep(1 / display)
             env.render()
     print(info)
-    input()
+    # input()
     time.sleep(1)
     env.close()
 

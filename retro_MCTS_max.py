@@ -134,7 +134,7 @@ class State:
                         if new_level > self.root.level or new_lives < self.root.lives:  # level up or lives down, terminal
                             terminal_info = (self.acts + action_done, new_enemies, new_level, new_lives, new_score)
                             res_list.append(terminal_info)
-                            if new_level > self.level:  # record level-up infos
+                            if new_level > self.level or self.level == 99:  # record level-up infos
                                 # print(terminal_info)
                                 level_up_infos.append(terminal_info)
                             terminal = True

@@ -42,7 +42,10 @@ def action(n):
 
 
 def find_best_acts(path, level, aux):
-    level_acts_files = [f for f in os.listdir(path) if 'lvl{}to{}_'.format(level, level + 1) in f]
+    if level == 99:
+        level_acts_files = [f for f in os.listdir(path) if 'lvl99' in f]
+    else:
+        level_acts_files = [f for f in os.listdir(path) if 'lvl{}to{}_'.format(level, level + 1) in f]
     if level_acts_files:
         return os.path.join(path, max(level_acts_files, key=lambda f: int(f[f.find('score') + 5:f.find('acts') - 1])))
     return '{}/lvl{}_acts.pickle'.format(aux, level)
@@ -53,7 +56,7 @@ def test(level, display=0):
     obs = env.reset()
     env.render()
     action_buffer = []
-    acts_dir = 'saved_acts_MCTS_0629'
+    acts_dir = 'saved_acts_MCTS'
     aux_dir = 'saved_acts_one_level_only'
     saved_acts_path = find_best_acts(acts_dir, level, aux_dir)
     print('Loading', saved_acts_path)
@@ -61,7 +64,7 @@ def test(level, display=0):
         action_array = pickle.load(handle)
     # action_array += [0] * 10
     info = None
-    while action_array:
+    while action_array or action_buffer:
         if not action_buffer:
             action_buffer += action(action_array.pop(0))
         obs, rew, done, info = env.step(action_buffer.pop())
@@ -77,6 +80,7 @@ def test(level, display=0):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument('-l', '--level', nargs='+', type=int, default=list(range(1, 100)), help="the starting level")
     parser.add_argument('-l', '--level', nargs='+', type=int, default=list(range(1, 100)), help="the starting level")
     args = parser.parse_args()
 
